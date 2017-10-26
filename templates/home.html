@@ -1,39 +1,45 @@
 <!DOCTYPE html>
+{% load staticfiles %}
 <html>
   <head>
     <meta charset="utf-8">
     <title>Email Finder</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/master.css' %}">
   </head>
   <body>
     <div class="container">
-      <h1>Welcome to Email Finder</h1>
+      <div class="jumbotron">
+        <h1>Email Finders</h1>
+        <p>Enter the API key of an email finder which you want to use. Leave it blank if not.</p>
+        <!-- <p>Don't be voracious! Limit the list as small. The maximum is 100. </p> -->
+      </div>
       <form action="/" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <div class="">
-          <label for="">Hunter:
-            <!-- <input type="checkbox"> -->
-            <input value='be59c50c1de77aba4c56d8d52a041b81b52afec3' type="text" name='api_hunter' placeholder='API Key for Hunter'>
+        <div class="form-group">
+          <label for="">Hunter API KEY:
+            <input value='be59c50c1de77aba4c56d8d52a041b81b52afec3' class='form-control' type="text" name='api_hunter' placeholder='API Key for Hunter'>
           </label>
         </div>
-        <div>
-          <label for="">Anymain:
-            <!-- <input type="checkbox"> -->
-            <input value='ed299083b5d4f8f48044b6dcfb6a073539ac3791' type="text" name='api_anymail' placeholder='API Key for Anymail'>
+        <div class='form-group'>
+          <label for="">Anymain API KEY:
+            <input value='ed299083b5d4f8f48044b6dcfb6a073539ac3791' class='form-control' type="text" name='api_anymail' placeholder='API Key for Anymail'>
           </label>
         </div>
-        <div>
-          <label for="">RocketReach:
-            <!-- <input type="checkbox"> -->
-            <input value='56a57k2689bd4b84a13d81d838ed51e7877514' type="text" name='api_rocketreach' placeholder='API Key for RocketReach'>
+        <div class='form-group'>
+          <label for="">RocketReach API KEY:
+            <input value='56a57k2689bd4b84a13d81d838ed51e7877514' class='form-control' type="text" name='api_rocketreach' placeholder='API Key for RocketReach'>
           </label>
         </div>
-        <!-- <div class="form-inline"> -->
-          <!-- <div class="form-group"> -->
-            <input type="file" name="my_input" required class="form-control-file dropzone" style="height:180px;width: 360%; border: dashed 1px black;" />
-          <!-- </div>/ -->
-        <!-- </div> -->
-  	    <button type="submit" class="btn btn-primary">Submit!</button>
+          <div class="form-group">
+            <p>Upload an excel file containing info of persons for whom you want to search emails</p>
+            <p>Make sure the column names of the excel file exact as "<strong>first name</strong>", "<strong>last name</strong>", "<strong>company name</strong>", "<strong>url</strong>"</p>
+            <input type="file" name="my_input" required class="form-control-file dropzone">
+          </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
       </form>
     </div>
   </body>

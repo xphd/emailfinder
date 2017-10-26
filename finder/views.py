@@ -30,17 +30,18 @@ def home(request):
             last_name = row['last name']
             company_name = row['company name']
             url = row['url']
+            email = ""
             found_by = ""
             if api_hunter:
                 email = finder.hunter(first_name,last_name,company_name,url,api_hunter)
                 if email:
                     found_by = 'Hunter'
-            if api_anymail and str(email) == 0:
+            if api_anymail and len(email) == 0:
                 email = finder.anymail(first_name,last_name,company_name,url,api_anymail)
                 if email:
                     found_by = 'AnyMail'
-            if api_rocketreach and str(email) == 0:
-                email = finder.rocketreach(first_name,last_name,company_name,url,api_rocketreach)
+            if api_rocketreach and len(email) == 0:
+                email = finder.rocketreach(first_name,last_name,company_name,api_rocketreach)
                 if email:
                     found_by = 'Rocket Reach'
             person_email = collections.OrderedDict(columns)
