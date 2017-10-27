@@ -17,16 +17,15 @@ def home(request):
         file = request.FILES['my_input']
         ls = pd.read_excel(file)
 ######## receive input from frontend END   ########
-
         columns = [
             ('first name',''),
             ('last name',''),
-            ('compnay name',''),
+            ('company name',''),
             ('domain',''),
             ('Hunter email',''),
             ('Hunter score',0),
-            ('Anymail email ',''),
-            ('Rocketreach email',''),
+            ('Anymail email',''),
+            ('RocketReach email',''),
         ]
         person_emails = []
         for index, row in ls.iterrows():
@@ -39,21 +38,31 @@ def home(request):
             anymail_email = ''
             rocketreach_email = ''
 
+            person_email = collections.OrderedDict(columns)
 
             if api_hunter:
                 hunter_email,hunter_score = finder.hunter(first_name,last_name,company_name,api_hunter)
                 if hunter_email:
                     person_email['Hunter email'] = hunter_email
                     person_email['Hunter score'] = hunter_score
+            else:
+                person_email['Hunter score'] = "Not Used"
             if api_anymail and hunter_score < 75:
                 anymail_email = finder.anymail(first_name,last_name,company_name,domain,api_anymail)
                 if anymail_email:
                     person_email['Anymail email'] = anymail_email
+                else:
+                    person_email['Anymail email'] = "Not Found"
+            else:
+                person_email['Anymail email'] = "Not Used"
             if api_rocketreach and hunter_score < 75 and len(anymail_email)==0:
                 rocketreach_email = finder.rocketreach(first_name,last_name,company_name,api_rocketreach)
                 if rocketreach_email:
-                    person_email['rocketreach email'] = rocketreach_email
-            person_email = collections.OrderedDict(columns)
+                    person_email['RocketReach email'] = rocketreach_email
+                else:
+                    person_email['RocketReach email'] = "Not Found"
+            else:
+                person_email['RocketReach email'] = "Not Used"
             person_email['first name'] = first_name
             person_email['last name'] = last_name
             person_email['company name'] = company_name
@@ -64,9 +73,7 @@ def home(request):
         filename = "output.xlsx"
         excel_file = io.BytesIO()
         xlwriter = pd.ExcelWriter(excel_file, engine='xlsxwriter',options={'remove_timezone': True})
-
         result = pd.DataFrame(person_emails)
-
         result.to_excel(xlwriter, sheet_name=filename)
         xlwriter.save()
         xlwriter.close()
