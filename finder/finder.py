@@ -1,12 +1,14 @@
 from pyhunter import PyHunter
 import requests,urllib.parse,collections
 
-def hunter(first_name, last_name, company_name, url, API):
+def hunter(first_name, last_name, company_name, API):
     hunter = PyHunter(API)
+    email = ''
+    score = 0
     email,score = hunter.email_finder(first_name=first_name,last_name=last_name,company=company_name)
-#     if confidence_score < 75:
-#         return ""
-    return email
+    # if confidence_score < 75:
+    #     return email
+    return email,score
 
 def anymail(first_name, last_name, company_name, domain, API):
     url = "https://api.anymailfinder.com/v3.1/search/person.json"
@@ -20,7 +22,7 @@ def anymail(first_name, last_name, company_name, domain, API):
         print(r.status_code)
         if r.status_code == 200:
             email = r.json()['best_guess']
-    print("email: " + email)
+    # print("email: " + email)
     return email
 
 def rocketreach(first_name, last_name, company_name, API):
@@ -36,5 +38,5 @@ def rocketreach(first_name, last_name, company_name, API):
     email = ""
     if r.status_code == 200:
          email = r.json()[0]['current_work_email']
-    print("email: " + email)
+    # print("email: " + email)
     return email

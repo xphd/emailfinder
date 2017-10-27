@@ -19,36 +19,45 @@ def home(request):
 ######## receive input from frontend END   ########
 
         columns = [
-            ('email',''),
             ('first name',''),
             ('last name',''),
-            ('found by',''),
+            ('compnay name',''),
+            ('domain',''),
+            ('Hunter email',''),
+            ('Hunter score',0),
+            ('Anymail email ',''),
+            ('Rocketreach email',''),
         ]
         person_emails = []
         for index, row in ls.iterrows():
             first_name = row['first name']
             last_name = row['last name']
             company_name = row['company name']
-            url = row['url']
-            email = ""
-            found_by = ""
+            domain = row['domain']
+            hunter_email = ''
+            hunter_score = 0
+            anymail_email = ''
+            rocketreach_email = ''
+
+
             if api_hunter:
-                email = finder.hunter(first_name,last_name,company_name,url,api_hunter)
-                if email:
-                    found_by = 'Hunter'
-            if api_anymail and len(email) == 0:
-                email = finder.anymail(first_name,last_name,company_name,url,api_anymail)
-                if email:
-                    found_by = 'AnyMail'
-            if api_rocketreach and len(email) == 0:
-                email = finder.rocketreach(first_name,last_name,company_name,api_rocketreach)
-                if email:
-                    found_by = 'Rocket Reach'
+                hunter_email,hunter_score = finder.hunter(first_name,last_name,company_name,api_hunter)
+                if hunter_email:
+                    person_email['Hunter email'] = hunter_email
+                    person_email['Hunter score'] = hunter_score
+            if api_anymail and hunter_score < 75:
+                anymail_email = finder.anymail(first_name,last_name,company_name,domain,api_anymail)
+                if anymail_email:
+                    person_email['Anymail email'] = anymail_email
+            if api_rocketreach and hunter_score < 75 and len(anymail_email)==0:
+                rocketreach_email = finder.rocketreach(first_name,last_name,company_name,api_rocketreach)
+                if rocketreach_email:
+                    person_email['rocketreach email'] = rocketreach_email
             person_email = collections.OrderedDict(columns)
-            person_email['email'] = email
             person_email['first name'] = first_name
             person_email['last name'] = last_name
-            person_email['found by'] = found_by
+            person_email['company name'] = company_name
+            person_email['domain'] = domain
             person_emails.append(person_email)
 
 ######## generate output BEGIN ########
