@@ -3,11 +3,13 @@ import requests,urllib.parse,collections
 
 def hunter(first_name, last_name, company_name, API):
     hunter = PyHunter(API)
-    email = ''
+    email = ""
     score = 0
     email,score = hunter.email_finder(first_name=first_name,last_name=last_name,company=company_name)
-    # if confidence_score < 75:
-    #     return email
+    if type(email) != type(""):
+        email = 'Person Not Found'
+    if type(score) != type(0):
+        score = -1
     return email,score
 
 def anymail(first_name, last_name, company_name, domain, API):
@@ -18,11 +20,13 @@ def anymail(first_name, last_name, company_name, domain, API):
     headers = { 'X-Api-Key': API, }
     email = ""
     r = requests.post(url,json=data,headers=headers)
-    if r:
-        print(r.status_code)
-        if r.status_code == 200:
-            email = r.json()['best_guess']
-    # print("email: " + email)
+    # print(r.statue_code)
+    if r.status_code == 200:
+        email = r.json()['best_guess']
+        print(email)
+    else:
+        print("Person Not Found",r.status_code)
+        email = 'Person Not Found'
     return email
 
 def rocketreach(first_name, last_name, company_name, API):
@@ -38,5 +42,9 @@ def rocketreach(first_name, last_name, company_name, API):
     email = ""
     if r.status_code == 200:
          email = r.json()[0]['current_work_email']
-    # print("email: " + email)
+         if type(email) != type(''):
+             email = 'None'
+    else:
+        print("Person Not Found",r.status_code)
+        email = "Person Not Found"
     return email

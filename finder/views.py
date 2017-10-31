@@ -1,11 +1,11 @@
 from django.shortcuts import render
-
 from django.http import HttpResponse
 import pandas as pd
 import io
 import collections
 import xlsxwriter
 from . import finder
+import time
 
 # Create your views here.
 def home(request):
@@ -25,49 +25,37 @@ def home(request):
             ('Hunter email',''),
             ('Hunter score',0),
             ('Anymail email',''),
-            ('RocketReach email',''),
-        ]
+            ('RocketReach email',''),]
         person_emails = []
         for index, row in ls.iterrows():
             first_name = row['first name']
             last_name = row['last name']
             company_name = row['company name']
             domain = row['domain']
-            hunter_email = ''
-            hunter_score = 0
-            anymail_email = ''
-            rocketreach_email = ''
-
+            hunter_email = ""
+            hunter_score = -2
+            anymail_email = ""
+            rocketreach_email = ""
             person_email = collections.OrderedDict(columns)
-
             if api_hunter:
                 hunter_email,hunter_score = finder.hunter(first_name,last_name,company_name,api_hunter)
-                if hunter_email:
-                    person_email['Hunter email'] = hunter_email
-                    person_email['Hunter score'] = hunter_score
-            else:
-                person_email['Hunter score'] = "Not Used"
+            person_email['Hunter email'] = hunter_email
+            person_email['Hunter score'] = hunter_score
+
             if api_anymail and hunter_score < 75:
                 anymail_email = finder.anymail(first_name,last_name,company_name,domain,api_anymail)
-                if anymail_email:
-                    person_email['Anymail email'] = anymail_email
-                else:
-                    person_email['Anymail email'] = "Not Found"
-            else:
-                person_email['Anymail email'] = "Not Used"
+            person_email['Anymail email'] = anymail_email
+
             if api_rocketreach and hunter_score < 75 and len(anymail_email)==0:
                 rocketreach_email = finder.rocketreach(first_name,last_name,company_name,api_rocketreach)
-                if rocketreach_email:
-                    person_email['RocketReach email'] = rocketreach_email
-                else:
-                    person_email['RocketReach email'] = "Not Found"
-            else:
-                person_email['RocketReach email'] = "Not Used"
+            person_email['RocketReach email'] = rocketreach_email
+
             person_email['first name'] = first_name
             person_email['last name'] = last_name
             person_email['company name'] = company_name
             person_email['domain'] = domain
             person_emails.append(person_email)
+            time.sleep(0.86)
 
 ######## generate output BEGIN ########
         filename = "output.xlsx"
