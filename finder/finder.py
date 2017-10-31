@@ -7,7 +7,8 @@ def hunter(first_name, last_name, company_name, API):
     score = 0
     email,score = hunter.email_finder(first_name=first_name,last_name=last_name,company=company_name)
     if type(email) != type(""):
-        email = 'Person Not Found'
+        email = 'PERSON NOT FOUND'
+        print('PERSON NOT FOUND')
     if type(score) != type(0):
         score = -1
     return email,score
@@ -23,10 +24,10 @@ def anymail(first_name, last_name, company_name, domain, API):
     # print(r.statue_code)
     if r.status_code == 200:
         email = r.json()['best_guess']
-        print(email)
+        # print(email)
     else:
-        print("Person Not Found",r.status_code)
-        email = 'Person Not Found'
+        email = 'PERSON NOT FOUND'
+        print("PERSON NOT FOUND",r.status_code)
     return email
 
 def rocketreach(first_name, last_name, company_name, API):
@@ -41,10 +42,10 @@ def rocketreach(first_name, last_name, company_name, API):
     r = requests.get(url)
     email = ""
     if r.status_code == 200:
-         email = r.json()[0]['current_work_email']
-         if type(email) != type(''):
-             email = 'None'
+        email = r.json()[0]['current_work_email']
+        if type(email) != type(''):
+            email = 'None'
     else:
-        print("Person Not Found",r.status_code)
-        email = "Person Not Found"
+        email = 'PERSON NOT FOUND'
+        print('PERSON NOT FOUND',r.status_code)
     return email
